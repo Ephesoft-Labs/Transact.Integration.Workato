@@ -9,7 +9,7 @@ This solution uses the [Workato custom connector](https://www.workato.com/custom
 - Ephesoft version that supports the [Custom Export Plugin Product documentation](https://ephesoft.com/docs/products/transact/features-and-functions/administrator/moduleplugin-configuration/export-module/custom-export-plugin-configuration-and-user-guide/)
 ## Artifacts:
 - [ExportScript.java](ScriptExport.java)
-- [JSON_Schema.txt](JsonSchema.txt)
+- [JSON_Schema.txt](json_schema.txt)
 
 
 ## Installation
