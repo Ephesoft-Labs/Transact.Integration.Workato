@@ -24,19 +24,33 @@ This solution uses the [Workato custom connector](https://www.workato.com/custom
     - **Important** The **Folder Path** must match the configuration that you configure in the Export Script in the 3rd step. 
   ![customconnector Image](/screenshots/1.png)
   
-3) The Workato recipe must be triggered with a webhook see the below screenshot for an example of the configuration. The Start Guided Setup makes it easy to capture the request from the Transact script that will be set up in the next step
+3) The Workato recipe must be triggered with a webhook see the below screenshot for an example of the configuration. The Start Guided Setup makes it easy to capture the request from the Transact script that will be set up in the next step.
 ![customconnector Image](/screenshots/2.png)  
 
-4) There is configuration within the Export Script that will be covered here. 
+4) Give your webhook a name and then copy the webhook address. Click Next. Leave the Workato window open for now. It should look like this:
+![customconnector Image](/screenshots/4.png)  
+
+5) There is configuration within the Export Script that will be covered here. 
 
         //This is the path that the custom Export files will be exported to. This script will use the data populated in that folder
 	   public static String CUSTOM_EXPORT_FILE_PATH = "C:\\Ephesoft\\SharedFolders\\final-drop-folder\\CustomExport\\";
 > **Note:** The Folder path in the EXPORT_SCRIPT must match with the CUSTOM_EXPORT_PLUGIN Folder Path from step 2
-5) In this step, we will add Ephesoft document types that should be mapped to any webhooks that are needed to be triggered
+6) In this step, we will add Ephesoft document types that should be mapped to any webhooks that are needed to be triggered
 
         	DOCTYPE_WEBHOOK_MAPPING.put("Statement", "https://www.workato.com/webhooks/rest/xxxxxxx-xxxxx-xxxx-xxxxxx/mywebhook-Doc1");
 			DOCTYPE_WEBHOOK_MAPPING.put("w2", "https://www.workato.com/webhooks/rest/xxxxxxx-xxxxx-xxxx-xxxxxx/mywebhook-Doc2");
 >**Note:** copy each line above if you need to support more then one document type.
+
+7) Once the export script has been updated for your batch class, run a batch through all the way to export. This should trigger the webhook.
+
+8) Go back to the Workato page you left open. You should see that a new event was received. You will see a message similar to the one below:
+![customconnector Image](/screenshots/5.png)  
+
+9) Scroll down and verify that the JSON payload was received:
+![customconnector Image](/screenshots/6.png)  
+
+10) You will now have the batch Payload information available as recipe data to use in your workflow. 
+![customconnector Image](/screenshots/7.png)  
 
 # License
 Ephesoft Labs is licensed under the Ephesoft Source Code License. 
