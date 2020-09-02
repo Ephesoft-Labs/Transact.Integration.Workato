@@ -19,7 +19,7 @@ This solution uses the [Workato custom connector](https://www.workato.com/custom
 1)  Add the following two plugins to the batch classes export module **CUSTOM_EXPORT_PLUGIN** and **EXPORT_SCRIPTING_PLUGIN**
 > **Note:** the order of the plugins is important. The CUSTOM_EXPORT_PLUGIN needs execute before the EXPORT_SCRIPTING_PLUGIN.
 2) Configure the **CUSTOM_EXPORT_PLUGIN** for each document type you wish to export from the batch class to a Workato. This will be the JSON payload that will be submitted to the Workato recipe. 
-    - Use the information in the [Custom Export Plugin Product documentation](https://ephesoft.com/docs/products/transact/features-and-functions/administrator/moduleplugin-configuration/export-module/custom-export-plugin-configuration-and-user-guide/) to build your custom JSON object
+    - Use the information in the [Custom Export Plugin Product documentation](https://ephesoft.com/docs/products/transact/features-and-functions/administrator/moduleplugin-configuration/export-module/custom-export-plugin-configuration-and-user-guide/) to build your custom JSON object. You can also use the example JSON schema text file that is linked above. You will need to update the Document Level Fields accordingly based on the document you are configuring the JSON export for.
     - **Important** you must use the following configuration for the **File Name** for the Export Metadata File.  **\~BI:Identifier\~-\~DOC:Identifier\~** The Export Script we use will use this naming convention. 
     - **Important** The **Folder Path** must match the configuration that you configure in the Export Script in the 3rd step. 
   ![customconnector Image](/screenshots/1.png)
