@@ -4,6 +4,14 @@ A repository to integrate Ephesoft Transact to workato. This repository is to be
 ## Architecture  
 This solution uses the [Workato custom connector](https://www.workato.com/custom_adapters/19399/details?community=true) to get information into Ephesoft Transact. To get information back into Workato from Transact, webhooks are used to trigger Workato recipes. To trigger the Workato webhooks the Ephesoft Custom Export plugin is used to configure the webhook payload with a JSON object. An export script is used to trigger the webhook and move the payload to Workato. Only the Transact extraction metadata is transported to Workato. If you need to export images from Transact to Workato it is recommended to use an online file repository such as Box.com or Amazon S3. 
 
+## Workato Recipe Libary 
+Ephesoft has published a few starter recipes to help show how the data that Ephesoft classifies and extracts can flow into downstream systems and processes. Below are links to the recipes in Workato. You can find recipes like these by searching the keyword "Ephesoft" in the Workato community recipe library. You can read more about what these recipes do in the recipe description.
+
+- [Ephesoft Transact - Export Invoice Data to Oracle](https://app.workato.com/recipes/1856039-ephesoft-transact-export-invoice-data-to-oracle?community=true)
+- [Create a Bill in NetSuite](https://app.workato.com/recipes/1698820-new-netsuitebill?community=true)
+- [Get-NormalizedTerm](https://app.workato.com/recipes/1698819-get-normalizedterm?community=true)
+- [Invoke-LineItem-InvoiceTotal-Validation](https://app.workato.com/recipes/1856038-invoke-lineitem-invoicetotal-validation?community=true)
+
 ## Prerequisites
 - Ephesoft Transact with an Ephesoft Webservice License (web service is needed to work with the workato custom connector)
 - Ephesoft version that supports the [Custom Export Plugin Product documentation](https://ephesoft.com/docs/products/transact/features-and-functions/administrator/moduleplugin-configuration/export-module/custom-export-plugin-configuration-and-user-guide/)
