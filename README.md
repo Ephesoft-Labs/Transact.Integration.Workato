@@ -1,11 +1,17 @@
 # Transact.Integration.Workato
-A repository to integrate Ephesoft Transact to workato. This repository is to be used with the Ephesoft Workato connector.
+A repository to integrate Ephesoft Transact to workato. This repository can be used with the Ephesoft Workato connector.
 
 ## Architecture  
-This solution uses the [Workato custom connector](https://www.workato.com/custom_adapters/19399/details?community=true) to get information into Ephesoft Transact. To get information back into Workato from Transact, webhooks are used to trigger Workato recipes. To trigger the Workato webhooks the Ephesoft Custom Export plugin is used to configure the webhook payload with a JSON object. An export script is used to trigger the webhook and move the payload to Workato. Only the Transact extraction metadata is transported to Workato. If you need to export images from Transact to Workato it is recommended to use an online file repository such as Box.com or Amazon S3. 
+This solution uses the [Workato custom connector](https://www.workato.com/custom_adapters/19399/details?community=true) 
+to get information into Ephesoft Transact from Workato. To get information back into Workato from Transact, webhooks are used to 
+trigger Workato recipes. To trigger the Workato webhooks the Ephesoft Export Script plugin is used to push data to workato 
+via a webhook. The Webhook is used Only to move Transact extraction metadata to Workato. If a project needs the exported
+images from Transact to Workato it is recommended to use an online file repository such as Box.com or Amazon S3. 
 
-## Workato Recipe Libary 
-Ephesoft has published a few starter recipes to help show how the data that Ephesoft classifies and extracts can flow into downstream systems and processes. Below are links to the recipes in Workato. You can find recipes like these by searching the keyword "Ephesoft" in the Workato community recipe library. You can read more about what these recipes do in the recipe description.
+## Workato Recipe Library 
+Ephesoft has published a few starter recipes to help show how the data that Ephesoft classifies and extracts can flow into 
+downstream systems and processes. Below are links to the recipes in Workato. You can find recipes like these by searching the 
+keyword "Ephesoft" in the Workato community recipe library. You can read more about what these recipes do in the recipe description.
 
 - [Ephesoft Transact - Export Invoice Data to Oracle](https://app.workato.com/recipes/1856039-ephesoft-transact-export-invoice-data-to-oracle?community=true)
 - [Create a Bill in NetSuite](https://app.workato.com/recipes/1698820-new-netsuitebill?community=true)
@@ -14,51 +20,38 @@ Ephesoft has published a few starter recipes to help show how the data that Ephe
 
 ## Prerequisites
 - Ephesoft Transact with an Ephesoft Webservice License (web service is needed to work with the workato custom connector)
-- Ephesoft version that supports the [Custom Export Plugin Product documentation](https://ephesoft.com/docs/products/transact/features-and-functions/administrator/moduleplugin-configuration/export-module/custom-export-plugin-configuration-and-user-guide/)
+- Batch Class Management access and the ability to deploy Transact workflow scripts
+
 ## Artifacts:
-- [ExportScript.java](ScriptExport.java)
-- [JSON_Schema.txt](json_schema.txt)
+- Ephesoft export script [ExportScript.java](Script Source/ScriptExport.java)
+- Workato Ephesoft batch export example recipe [Ephesoft Transact - Export Batch Processing Example](https://app.workato.com/recipes/2391763-ephesoft-transact-export-batch-processing-example?community=true)
 
+## Workato Recipe Configuration 
+1) Log into Workato and navigate to the example recipe [Ephesoft Transact - Export Batch Processing Example](https://app.workato.com/recipes/1856039-ephesoft-transact-export-invoice-data-to-oracle?community=true)
+2) Click the **Use This Recipe** button to add a copy of the recipe to your account
+3) Edit the recipe and copy the webhook address 
+   ![webhook edit Image](screenshots/1.png)
+4) Fix any Recipe connection errors or empty fields and start the recipe
+> **Note:** If the recipe is not running the Ephesoft batch instance will go into error status, and you will need to start the recipe
+> and restart the batch at Export. 
+## Configuration in ExportScript.java
 
-## Installation
-1) Move the ScriptExport.java and be sure to name the file **ScriptExport.java** file to the Scripts folder for your chosen batch class, at [Ephesoft_Directory]\Shared-Folders\<your batch class>\Scripts.
+4) Edit the Ephesoft export script file [ExportScript.java](Script Source/ScriptExport.java).
+In the script replace the WEBHOOK_MAPPING_BATCH_URL variable to be the value of the webhook address copied from the recipe. 
 
-## Configuratrating the Custom Export plugin and Export Script.java
-1)  Add the following two plugins to the batch classes export module **CUSTOM_EXPORT_PLUGIN** and **EXPORT_SCRIPTING_PLUGIN**
-> **Note:** the order of the plugins is important. The CUSTOM_EXPORT_PLUGIN needs execute before the EXPORT_SCRIPTING_PLUGIN.
-2) Configure the **CUSTOM_EXPORT_PLUGIN** for each document type you wish to export from the batch class to a Workato. This will be the JSON payload that will be submitted to the Workato recipe. 
-    - Use the information in the [Custom Export Plugin Product documentation](https://ephesoft.com/docs/products/transact/features-and-functions/administrator/moduleplugin-configuration/export-module/custom-export-plugin-configuration-and-user-guide/) to build your custom JSON object. You can also use the example JSON schema text file that is linked above. You will need to update the Document Level Fields accordingly based on the document you are configuring the JSON export for.
-    - **Important** you must use the following configuration for the **File Name** for the Export Metadata File.  **\~BI:Identifier\~-\~DOC:Identifier\~** The Export Script we use will use this naming convention. 
-    - **Important** The **Folder Path** must match the configuration that you configure in the Export Script in the 3rd step. 
-  ![customconnector Image](/screenshots/1.png)
-  
-3) The Workato recipe must be triggered with a webhook see the below screenshot for an example of the configuration. The Start Guided Setup makes it easy to capture the request from the Transact script that will be set up in the next step.
-![customconnector Image](/screenshots/2.png)  
+            public static String WEBHOOK_MAPPING_BATCH_URL = "https://www.workato.com/webhooks/rest/xxxxxxx-xxxxx-xxxx-xxxxxx/ephesoftbatchexport";
 
-4) Give your webhook a name and then copy the webhook address. Click Next. Leave the Workato window open for now. It should look like this:
-![customconnector Image](/screenshots/4.png)  
+5) Move the **ScriptExport.java** to the scripts' folder for your chosen batch class, at  [Ephesoft_Directory]\Shared-Folders\<your batch class>\Scripts.
+ or use the Ephesoft File Management Screen to upload the Export Script to your batch class
+6) Add the following plugin to the batch classes export module **EXPORT_SCRIPTING_PLUGIN**
+7) **Optional Step:** If Ephesoft output images are needed for your project, an export location for the image will be needed.
+The Ephesoft [Amazon S3](https://github.com/Ephesoft-Labs/Transact.Toolkit.Export/tree/master/Export%20Plugins/s3-export-plugin) 
+export plugin is used as an example but other supported file content repertoires can be used as well. 
+> **Note:** the order of the plugins are important. The EXPORT_SCRIPTING_PLUGIN needs execute after the S3_EXPORT_PLUGIN. 
+> This will ensure that the images are exported prior to having the recipe to download them.
 
-5) There is configuration within the Export Script that will be covered here. 
-
-        //This is the path that the custom Export files will be exported to. This script will use the data populated in that folder
-	   public static String CUSTOM_EXPORT_FILE_PATH = "C:\\Ephesoft\\SharedFolders\\final-drop-folder\\CustomExport\\";
-> **Note:** The Folder path in the EXPORT_SCRIPT must match with the CUSTOM_EXPORT_PLUGIN Folder Path from step 2
-6) In this step, we will add Ephesoft document types that should be mapped to any webhooks that are needed to be triggered
-
-        	DOCTYPE_WEBHOOK_MAPPING.put("Statement", "https://www.workato.com/webhooks/rest/xxxxxxx-xxxxx-xxxx-xxxxxx/mywebhook-Doc1");
-			DOCTYPE_WEBHOOK_MAPPING.put("w2", "https://www.workato.com/webhooks/rest/xxxxxxx-xxxxx-xxxx-xxxxxx/mywebhook-Doc2");
->**Note:** copy each line above if you need to support more then one document type.
-
-7) Once the export script has been updated for your batch class, run a batch through all the way to export. This should trigger the webhook.
-
-8) Go back to the Workato page you left open. You should see that a new event was received. You will see a message similar to the one below:
-![customconnector Image](/screenshots/5.png)  
-
-9) Scroll down and verify that the JSON payload was received:
-![customconnector Image](/screenshots/6.png)  
-
-10) You will now have the batch Payload information available as recipe data to use in your workflow. 
-![customconnector Image](/screenshots/7.png)  
+## Known Unsupported Data
+- Currently, this export script does not support Ephesoft table extracted data. 
 
 # License
 Ephesoft Labs is licensed under the Ephesoft Source Code License. 
